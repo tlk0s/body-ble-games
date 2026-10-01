@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+pi/.venv/
+
+# PlatformIO build artifacts
+**/.pio/
+
+# Cursor / agent-local (not part of the published project)
+.remember/
+.cursor/
+
+# Docs: only wiring reference is published (see README)
+docs/**
+!docs/hardware-wiring.md
+!docs/wiring-schematic.svg
+!docs/wiring-schematic.html

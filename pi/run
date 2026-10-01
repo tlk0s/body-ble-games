@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Use venv Python (pygame-ce lives here, not system python).
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT"
+if [[ ! -x "$ROOT/.venv/bin/python" ]]; then
+  echo "Missing .venv — run: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt"
+  exit 1
+fi
+export MOCK_BLE="${MOCK_BLE:-1}"
+# Real remotes: MOCK_BLE=0 ./run
+exec "$ROOT/.venv/bin/python" main.py "$@"

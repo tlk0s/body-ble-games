@@ -1,0 +1,23 @@
+# User service — install to ~/.config/systemd/user/body-ble-games.service
+# Enable: systemctl --user enable --now body-ble-games.service
+# Also: loginctl enable-linger pi   (replace pi with your username)
+
+[Unit]
+Description=Body BLE Games (kiosk)
+After=graphical-session.target network-online.target
+Wants=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/body-ble-games/pi
+Environment=MOCK_BLE=0
+Environment=BODY_FULLSCREEN=1
+Environment=BODY_GAME=blob_jump
+Environment=SDL_VIDEODRIVER=wayland
+ExecStart=/home/pi/body-ble-games/pi/start-kiosk.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

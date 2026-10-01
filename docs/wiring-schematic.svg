@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 720" font-family="system-ui, sans-serif" font-size="13">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#333"/>
+    </marker>
+  </defs>
+  <rect width="920" height="720" fill="#fafafa"/>
+  <text x="460" y="32" text-anchor="middle" font-size="18" font-weight="600">One body controller - wiring overview</text>
+  <text x="460" y="52" text-anchor="middle" fill="#555">Blue remote: flash boy. Red remote: flash girl.</text>
+
+  <rect x="40" y="90" width="100" height="56" rx="6" fill="#ffe8a3" stroke="#c9a227"/>
+  <text x="90" y="115" text-anchor="middle" font-weight="600">LiPo</text>
+  <text x="90" y="132" text-anchor="middle" font-size="11">B+  B-</text>
+
+  <rect x="180" y="82" width="120" height="72" rx="6" fill="#e8f4ff" stroke="#4a90d9"/>
+  <text x="240" y="108" text-anchor="middle" font-weight="600">USB-C</text>
+  <text x="240" y="125" text-anchor="middle">charge board</text>
+  <text x="240" y="142" text-anchor="middle" font-size="11">B+ B-</text>
+
+  <rect x="340" y="82" width="120" height="72" rx="6" fill="#e8f4ff" stroke="#4a90d9"/>
+  <text x="400" y="108" text-anchor="middle" font-weight="600">LX-LCBST</text>
+  <text x="400" y="128" text-anchor="middle" font-size="11">VO+ to 5V</text>
+  <text x="400" y="144" text-anchor="middle" font-size="11">VO- to GND</text>
+
+  <rect x="520" y="70" width="160" height="200" rx="8" fill="#222" stroke="#111"/>
+  <text x="600" y="98" text-anchor="middle" fill="#fff" font-weight="600">ESP32-C3</text>
+  <text x="600" y="118" text-anchor="middle" fill="#9cf">SuperMini</text>
+  <text x="600" y="148" text-anchor="middle" fill="#ccc" font-size="12">5V from VO+</text>
+  <text x="600" y="168" text-anchor="middle" fill="#ccc" font-size="12">GND from VO-</text>
+  <text x="600" y="188" text-anchor="middle" fill="#ccc" font-size="12">3V3 to MPU VCC</text>
+  <text x="600" y="208" text-anchor="middle" fill="#8f8" font-size="12">GPIO8 to SDA</text>
+  <text x="600" y="228" text-anchor="middle" fill="#8f8" font-size="12">GPIO9 to SCL</text>
+  <text x="600" y="248" text-anchor="middle" fill="#f88" font-size="12">GPIO5 to pwr btn</text>
+
+  <rect x="720" y="90" width="160" height="120" rx="6" fill="#4a6cf7" stroke="#234"/>
+  <text x="800" y="118" text-anchor="middle" fill="#fff" font-weight="600">GY-521</text>
+  <text x="800" y="138" text-anchor="middle" fill="#fff">MPU-6050</text>
+  <text x="800" y="162" text-anchor="middle" fill="#eef" font-size="11">VCC GND SDA SCL</text>
+  <text x="800" y="180" text-anchor="middle" fill="#eef" font-size="11">AD0 to GND (0x68)</text>
+  <text x="800" y="198" text-anchor="middle" fill="#ffa" font-size="11">on belt, F = to TV</text>
+
+  <circle cx="590" cy="342" r="28" fill="#2980b9" stroke="#1a5276"/>
+  <text x="590" y="346" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">BLUE btn</text>
+  <text x="590" y="382" text-anchor="middle" font-size="10" fill="#666">boy firmware</text>
+
+  <circle cx="740" cy="342" r="28" fill="#c0392b" stroke="#922"/>
+  <text x="740" y="346" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">RED btn</text>
+  <text x="740" y="382" text-anchor="middle" font-size="10" fill="#666">girl firmware</text>
+  <text x="665" y="408" text-anchor="middle" font-size="11">each: GPIO5 to GND (power / sleep)</text>
+  <text x="665" y="424" text-anchor="middle" font-size="10" fill="#666">not in LiPo path alone</text>
+
+  <line x1="140" y1="118" x2="180" y2="118" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="300" y1="118" x2="340" y2="118" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="460" y1="118" x2="520" y2="130" stroke="#c0392b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="480" y="108" fill="#c0392b" font-size="11">5V</text>
+
+  <line x1="680" y1="150" x2="720" y2="150" stroke="#4a90d9" stroke-width="2"/>
+  <line x1="680" y1="170" x2="720" y2="170" stroke="#4a90d9" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="700" y="188" font-size="10" fill="#666">I2C</text>
+
+  <line x1="620" y1="250" x2="590" y2="314" stroke="#f88" stroke-width="2"/>
+  <line x1="640" y1="250" x2="740" y2="314" stroke="#f88" stroke-width="2" stroke-dasharray="4 3"/>
+
+  <rect x="40" y="420" width="200" height="80" rx="8" fill="#2ecc71" stroke="#1e8449"/>
+  <text x="140" y="452" text-anchor="middle" fill="#fff" font-weight="600">Pi Zero 2 W</text>
+  <text x="140" y="472" text-anchor="middle" fill="#fff" font-size="12">pygame + BLE central</text>
+  <text x="140" y="490" text-anchor="middle" fill="#ecf" font-size="11">no wire to ESP</text>
+
+  <path d="M 600 270 Q 300 350 140 420" fill="none" stroke="#27ae60" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="360" y="340" fill="#27ae60" font-weight="600">Bluetooth LE</text>
+
+  <rect x="40" y="530" width="840" height="160" rx="8" fill="#fff" stroke="#ccc"/>
+  <text x="60" y="558" font-weight="600">Notes</text>
+  <text x="60" y="582" fill="#333">1. Common GND everywhere: LiPo-, charger, boost, ESP, MPU, switches.</text>
+  <text x="60" y="604" fill="#333">2. Rocker removed; same GPIO5 button. Blue cap = boy flash, red cap = girl flash.</text>
+  <text x="60" y="626" fill="#333">3. Momentary button on GPIO5 only; use deep sleep. Do not put button in LiPo path alone.</text>
+  <text x="60" y="648" fill="#333">4. MPU on belt with short wires; mark forward on the case for sidestep/jump tuning.</text>
+  <text x="60" y="670" fill="#333">5. Charge via USB-C on charge board while LiPo stays connected.</text>
+</svg>

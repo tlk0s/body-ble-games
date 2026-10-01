@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Body BLE Games
+Comment=Full-screen motion games (BLE kiosk)
+Exec=/home/pi/body-ble-games/pi/start-kiosk.sh
+Terminal=false
+X-GNOME-Autostart-enabled=true
