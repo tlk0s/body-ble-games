@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Unblock + power on BT before BLE game (Pi often soft-blocks hci0 at boot).
-set -euo pipefail
+set -uo pipefail
 
 if [[ "${BODY_BT_UNBLOCK:-1}" == "0" ]]; then
   exit 0

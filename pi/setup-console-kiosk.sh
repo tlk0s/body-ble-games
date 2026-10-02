@@ -10,6 +10,8 @@ fi
 if [[ "$RESTORE" == 1 ]]; then
   echo "Restoring desktop boot…"
   sudo systemctl disable --now body-ble-games-kiosk.service 2>/dev/null || true
+  sudo systemctl unmask getty@tty1.service 2>/dev/null || true
+  sudo systemctl enable getty@tty1.service 2>/dev/null || true
   for u in lightdm rpd-wayfire wayfire labwc; do
     sudo systemctl enable "$u" 2>/dev/null || true
   done
@@ -22,6 +24,9 @@ echo "Disabling desktop session (keeps SSH)…"
 for u in lightdm rpd-wayfire wayfire labwc; do
   sudo systemctl disable --now "$u" 2>/dev/null || true
 done
+echo "Freeing tty1 for the game (no login prompt on TV)…"
+sudo systemctl disable --now getty@tty1.service 2>/dev/null || true
+sudo systemctl mask getty@tty1.service 2>/dev/null || true
 sudo systemctl disable --now body-ble-games-kiosk.service 2>/dev/null || true
 sudo systemctl enable body-ble-games-kiosk.service
 sudo systemctl set-default multi-user.target
