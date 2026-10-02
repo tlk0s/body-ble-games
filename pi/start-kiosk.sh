@@ -33,12 +33,21 @@ if [[ "$UPDATE_ON_START" != "0" ]]; then
 fi
 
 cd "$ROOT"
+chmod +x "$ROOT/ensure-bluetooth.sh" "$ROOT/set-display-720p.sh" 2>/dev/null || true
+"$ROOT/ensure-bluetooth.sh" >>"$LOG" 2>&1 || true
+
 export MOCK_BLE=0
 export BODY_FULLSCREEN=1
 export BODY_GAME="${BODY_GAME:-blob_jump}"
-# Pi Zero 2 W: 30 FPS + no procedural music keeps gameplay smooth
+# Pi Zero 2 W: 720p + 30 FPS + no procedural music
+export BODY_HDMI_720="${BODY_HDMI_720:-1}"
 export BODY_FPS="${BODY_FPS:-30}"
 export BODY_MUSIC="${BODY_MUSIC:-0}"
+
+export DISPLAY="${DISPLAY:-:0}"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+"$ROOT/set-display-720p.sh" >>"$LOG" 2>&1 || true
+
 # Uncomment if pygame fails to open display on your Pi OS image:
 # export SDL_VIDEODRIVER=wayland
 exec "$ROOT/.venv/bin/python" main.py

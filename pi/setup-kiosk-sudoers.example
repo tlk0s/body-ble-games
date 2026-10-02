@@ -1,0 +1,8 @@
+# One-time on the Pi (allows kiosk autostart to unblock Bluetooth without a password prompt):
+#   sudo cp setup-kiosk-sudoers.example /etc/sudoers.d/body-ble-games
+#   sudo chmod 440 /etc/sudoers.d/body-ble-games
+#   sudo visudo -c
+# Replace tolko with your login name.
+
+tolko ALL=(ALL) NOPASSWD: /usr/sbin/rfkill unblock bluetooth
+tolko ALL=(ALL) NOPASSWD: /usr/bin/bluetoothctl power on
