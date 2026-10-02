@@ -8,6 +8,7 @@ import time
 import pygame
 
 _GAME_FPS = max(15, min(60, int(os.environ.get("BODY_FPS", "60"))))
+_SHOW_DEBUG_HUD = os.environ.get("BODY_DEBUG_HUD", "1") not in ("0", "false", "False")
 
 from input_events import FrameInput, SessionEventType
 from motion_profiles import MotionProfile
@@ -113,8 +114,9 @@ class BaseGame:
             self.update(inputs, dt)
             self.screen.fill((30, 30, 40))
             self.draw(inputs)
-            self.draw_debug_hud(inputs, y=self.screen.get_height() - 76, ble=ble)
-            self._draw_exit_hint(ble)
+            if _SHOW_DEBUG_HUD:
+                self.draw_debug_hud(inputs, y=self.screen.get_height() - 76, ble=ble)
+                self._draw_exit_hint(ble)
             present(self.screen)
 
         return self.exit_to

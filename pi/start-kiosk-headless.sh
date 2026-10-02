@@ -30,9 +30,12 @@ cd "$ROOT"
 export MOCK_BLE=0
 export BODY_FULLSCREEN=1
 export BODY_GAME="${BODY_GAME:-blob_jump}"
-export BODY_FPS="${BODY_FPS:-30}"
+export BODY_FPS="${BODY_FPS:-24}"
 export BODY_MUSIC="${BODY_MUSIC:-0}"
 export BODY_HDMI_720=0
+export BODY_BLE_P2_SCAN="${BODY_BLE_P2_SCAN:-0}"
+export BODY_DEBUG_HUD="${BODY_DEBUG_HUD:-0}"
+export SDL_VIDEO_VSYNC="${SDL_VIDEO_VSYNC:-0}"
 unset DISPLAY
 export SDL_AUDIODRIVER="${SDL_AUDIODRIVER:-alsa}"
 

@@ -29,6 +29,10 @@ def create_game_surface(width: int, height: int, fullscreen: bool) -> pygame.Sur
 
     _real = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     _virtual = pygame.Surface((width, height))
+    try:
+        _virtual = _virtual.convert()
+    except pygame.error:
+        pass
     return _virtual
 
 

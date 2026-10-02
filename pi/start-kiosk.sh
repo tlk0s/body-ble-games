@@ -41,8 +41,10 @@ export BODY_FULLSCREEN=1
 export BODY_GAME="${BODY_GAME:-blob_jump}"
 # Pi Zero 2 W: 720p + 30 FPS + no procedural music
 export BODY_HDMI_720="${BODY_HDMI_720:-1}"
-export BODY_FPS="${BODY_FPS:-30}"
+export BODY_FPS="${BODY_FPS:-24}"
 export BODY_MUSIC="${BODY_MUSIC:-0}"
+export BODY_BLE_P2_SCAN="${BODY_BLE_P2_SCAN:-0}"
+export BODY_DEBUG_HUD="${BODY_DEBUG_HUD:-0}"
 
 export DISPLAY="${DISPLAY:-:0}"
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import queue
 import threading
 import time
@@ -13,6 +14,7 @@ from ble_protocol import INPUT_CHAR_UUID, NAME_PREFIX, parse_input_packet
 from players import PlayerManager
 
 STALE_NOTIFY_S = 2.5
+_P2_SCAN = os.environ.get("BODY_BLE_P2_SCAN", "0") not in ("0", "false", "False")
 
 
 @dataclass
@@ -145,11 +147,16 @@ class BleManager:
                 await asyncio.sleep(1.0)
                 continue
 
-            # Active BLE scans stall a weak Pi (~4s each); avoid during 1P play.
+            # Active BLE scans stall a weak Pi (~2–4s each); skip during 1P kiosk unless enabled.
+            if len(clients) == 1 and not _P2_SCAN:
+                self.status = f"connected {len(clients)}/{self.MAX_DEVICES}"
+                await asyncio.sleep(2.0)
+                continue
+
             if len(clients) == 1:
-                self.status = f"connected {len(clients)}/{self.MAX_DEVICES} (P2 hot-join slow scan)"
-                await asyncio.sleep(12.0)
-                scan_timeout = 2.0
+                self.status = f"connected {len(clients)}/{self.MAX_DEVICES} (P2 scan)"
+                await asyncio.sleep(15.0)
+                scan_timeout = 1.5
             else:
                 self.status = "scanning…"
                 scan_timeout = 4.0
