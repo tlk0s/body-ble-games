@@ -8,6 +8,7 @@ import pygame
 
 from input_events import FrameInput, SessionEventType
 from motion_profiles import MotionProfile
+from display import present
 from players import PlayerManager
 
 
@@ -23,6 +24,7 @@ class BaseGame:
         self.font = pygame.font.SysFont(None, 22)
         self.font_lg = pygame.font.SysFont(None, 28)
         self.exit_to: str = "menu"
+        self._ble = None
 
     def handle_event(self, event: pygame.event.Event, ble=None) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -76,6 +78,7 @@ class BaseGame:
         had_player = self.players.active_count() > 0
         no_player_since: float | None = None
 
+        self._ble = ble
         while self.running:
             dt = self.clock.tick(60) / 1000.0
             if ble is not None:
@@ -109,6 +112,6 @@ class BaseGame:
             self.draw(inputs)
             self.draw_debug_hud(inputs, y=self.screen.get_height() - 76, ble=ble)
             self._draw_exit_hint(ble)
-            pygame.display.flip()
+            present(self.screen)
 
         return self.exit_to

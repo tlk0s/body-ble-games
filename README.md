@@ -2,6 +2,13 @@
 
 Motion-controlled games for **Raspberry Pi Zero 2 W** and **ESP32-C3** belt clips (MPU-6050 GY-521, BLE). **Blue** push-button remote = boy hero; **red** = girl (set when you flash firmware).
 
+```bash
+git clone https://github.com/tlk0s/body-ble-games.git
+cd body-ble-games
+```
+
+Bench-test motion over USB: `firmware/motion_test/`. Flash BLE belts: `firmware/body_controller/` (`make flash-blue` / `make flash-red`).
+
 ## Games
 
 1. **BlobJump** — runner; **jump** and **duck**; blue / pink blobs.
@@ -20,8 +27,8 @@ Up to two controllers; second device **hot-joins** when powered on.
 ```bash
 cd pi
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-./run
-# or: MOCK_BLE=1 .venv/bin/python main.py
+./run                    # keyboard mock (dev)
+MOCK_BLE=0 ./run         # real belt remotes (Mac/PC/Pi, Bluetooth on)
 ```
 
 **Dev (keyboard):** **1** / **2** pick game; **Space** jump, **Down** duck, **A/D** sidestep, **B/G** boy/girl; **J** hot-join P2.

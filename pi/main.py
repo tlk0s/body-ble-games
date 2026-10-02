@@ -15,6 +15,7 @@ except ModuleNotFoundError:
     sys.exit(1)
 
 from ble_manager import BleManager
+from display import create_game_surface, present
 from mock_input import MockBleInput
 from motion_profiles import GAME_PROFILE, MotionProfile
 from players import PlayerManager
@@ -30,10 +31,7 @@ LANE_RACE_SELECTABLE = False  # show on menu, jump-only select for now
 
 
 def create_screen() -> pygame.Surface:
-    if BODY_FULLSCREEN:
-        pygame.mouse.set_visible(False)
-        return pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
-    return pygame.display.set_mode((WIDTH, HEIGHT))
+    return create_game_surface(WIDTH, HEIGHT, BODY_FULLSCREEN)
 
 
 def draw_centered(screen: pygame.Surface, lines: list[str], y_start: int, color=(240, 240, 240)) -> None:
@@ -109,7 +107,7 @@ def run_game_select(
         if ble is not None and players.active_count() >= 1:
             hint = font.render(f"BLE 0x{ble.last_flags:02X}", True, (140, 140, 140))
             screen.blit(hint, hint.get_rect(center=(screen.get_width() // 2, HEIGHT - 24)))
-        pygame.display.flip()
+        present(screen)
 
 
 def load_game(game_id: str, players: PlayerManager, screen: pygame.Surface):

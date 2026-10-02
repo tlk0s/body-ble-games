@@ -378,9 +378,27 @@ class BlobJumpGame(BaseGame):
 
     def draw(self, inputs: list[FrameInput]) -> None:
         w, h = self.screen.get_size()
-        two = len(self._active_slots(inputs)) >= 2
-        self.screen.fill(30)
+        active = self._active_slots(inputs)
+        two = len(active) >= 2
         now = time.monotonic()
+
+        if not active:
+            lane = pygame.Rect(0, 0, w, h)
+            self._draw_lane_bg(lane)
+            preview = self.sprites.blob_stand_boy
+            self.screen.blit(preview, self._blob_draw_rect(0, lane, preview).topleft)
+            title = self.font_lg.render("BlobJump", True, (255, 255, 255))
+            self.screen.blit(title, title.get_rect(midtop=(w // 2, 24)))
+            wait = self.font.render("Power on a belt remote (BodyCtrl-…)", True, (240, 240, 240))
+            self.screen.blit(wait, wait.get_rect(midtop=(w // 2, 56)))
+            ble = getattr(self, "_ble", None)
+            if ble is not None:
+                msg = ble.last_error or ble.status or "scanning…"
+                stat = self.font.render(str(msg), True, (255, 220, 120))
+                self.screen.blit(stat, stat.get_rect(midtop=(w // 2, 82)))
+            return
+
+        self.screen.fill(30)
 
         if two:
             mid = self._split_mid_y()
