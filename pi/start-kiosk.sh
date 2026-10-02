@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$ROOT/.." && pwd)"
 LOG="${BODY_KIOSK_LOG:-$ROOT/kiosk-update.log}"
-UPDATE_ON_START="${BODY_UPDATE_ON_START:-1}"
+UPDATE_ON_START="${BODY_UPDATE_ON_START:-0}"
 
 if [[ ! -x "$ROOT/.venv/bin/python" ]]; then
   echo "Missing .venv — run: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt"

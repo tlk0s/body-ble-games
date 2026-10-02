@@ -140,22 +140,34 @@ class BleManager:
                 clients.pop(addr, None)
                 schedule_leave(addr)
 
-            if len(clients) < self.MAX_DEVICES:
+            if len(clients) >= self.MAX_DEVICES:
+                self.status = f"connected {len(clients)}/{self.MAX_DEVICES}"
+                await asyncio.sleep(1.0)
+                continue
+
+            # Active BLE scans stall a weak Pi (~4s each); avoid during 1P play.
+            if len(clients) == 1:
+                self.status = f"connected {len(clients)}/{self.MAX_DEVICES} (P2 hot-join slow scan)"
+                await asyncio.sleep(12.0)
+                scan_timeout = 2.0
+            else:
                 self.status = "scanning…"
+                scan_timeout = 4.0
+
+            try:
+                device = await BleakScanner.find_device_by_filter(
+                    lambda d, _ad: bool(d.name and d.name.startswith(NAME_PREFIX)),
+                    timeout=scan_timeout,
+                )
+            except Exception as exc:  # noqa: BLE001
+                self.last_error = str(exc)
+                device = None
+            if device is not None and device.address not in clients:
                 try:
-                    device = await BleakScanner.find_device_by_filter(
-                        lambda d, _ad: bool(d.name and d.name.startswith(NAME_PREFIX)),
-                        timeout=4.0,
-                    )
+                    await connect_one(device)
                 except Exception as exc:  # noqa: BLE001
                     self.last_error = str(exc)
-                    device = None
-                if device is not None and device.address not in clients:
-                    try:
-                        await connect_one(device)
-                    except Exception as exc:  # noqa: BLE001
-                        self.last_error = str(exc)
-                        self.status = "connect failed"
+                    self.status = "connect failed"
             await asyncio.sleep(0.5)
 
         for client in list(clients.values()):

@@ -1,0 +1,34 @@
+# Console kiosk (no desktop) — saves RAM on Pi Zero 2 W.
+#
+# Setup (SSH):
+#   1. sed "s|/home/tolko|/home/YOURUSER|g" body-ble-games-kiosk.service.example | sudo tee /etc/systemd/system/body-ble-games-kiosk.service
+#   2. sudo systemctl daemon-reload
+#   3. sudo ./setup-console-kiosk.sh   (disables desktop, enables this service)
+#   4. sudo reboot
+#
+# Revert desktop: sudo ./setup-console-kiosk.sh --restore
+
+[Unit]
+Description=Body BLE Games full-screen (no desktop)
+After=network-online.target bluetooth.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=tolko
+WorkingDirectory=/home/tolko/body-ble-games/pi
+Environment=HOME=/home/tolko
+ExecStartPre=/home/tolko/body-ble-games/pi/ensure-bluetooth.sh
+ExecStart=/home/tolko/body-ble-games/pi/start-kiosk-headless.sh
+Restart=on-failure
+RestartSec=5
+# Console / DRM — no X11 or Wayland session required
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+
+[Install]
+WantedBy=multi-user.target
