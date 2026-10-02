@@ -41,7 +41,13 @@ def present(virtual: pygame.Surface) -> None:
     vw, vh = virtual.get_size()
     scale = min(gw / vw, gh / vh)
     nw, nh = max(1, int(vw * scale)), max(1, int(vh * scale))
-    scaled = pygame.transform.smoothscale(virtual, (nw, nh)) if (nw, nh) != (vw, vh) else virtual
+    if (nw, nh) == (vw, vh):
+        scaled = virtual
+    elif nw == vw * 2 and nh == vh * 2:
+        scaled = pygame.transform.scale2x(virtual)
+    else:
+        # scale (not smoothscale) — much cheaper on Pi Zero 2 W
+        scaled = pygame.transform.scale(virtual, (nw, nh))
     x, y = (gw - nw) // 2, (gh - nh) // 2
     _real.fill((0, 0, 0))
     _real.blit(scaled, (x, y))

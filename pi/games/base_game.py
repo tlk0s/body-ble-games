@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import os
 import time
 
 import pygame
+
+_GAME_FPS = max(15, min(60, int(os.environ.get("BODY_FPS", "60"))))
 
 from input_events import FrameInput, SessionEventType
 from motion_profiles import MotionProfile
@@ -80,7 +83,7 @@ class BaseGame:
 
         self._ble = ble
         while self.running:
-            dt = self.clock.tick(60) / 1000.0
+            dt = self.clock.tick(_GAME_FPS) / 1000.0
             if ble is not None:
                 ble.poll()
             for ev in self.players.consume_session_events():

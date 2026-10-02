@@ -21,7 +21,7 @@ from motion_profiles import GAME_PROFILE, MotionProfile
 from players import PlayerManager
 
 WIDTH, HEIGHT = 640, 360
-FPS = 60
+FPS = max(15, min(60, int(os.environ.get("BODY_FPS", "60"))))
 
 MOCK_BLE = os.environ.get("MOCK_BLE", "1") not in ("0", "false", "False")
 # Optional kiosk: skip menu — BODY_GAME=blob_jump or lane_race

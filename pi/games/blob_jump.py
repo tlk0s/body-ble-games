@@ -29,6 +29,7 @@ class Obstacle:
     wave_id: int
     hit: bool = False
     resolved: bool = False
+    sprite: pygame.Surface | None = field(default=None, repr=False, compare=False)
 
 
 @dataclass
@@ -252,9 +253,11 @@ class BlobJumpGame(BaseGame):
         return pygame.Rect(lane_rect.left + self.BLOB_X, top, sprite.get_width(), sprite.get_height())
 
     def _obs_sprite(self, obs: Obstacle) -> pygame.Surface:
-        if obs.kind == ObsKind.GROUND:
-            return pygame.transform.smoothscale(self.sprites.cactus, (obs.w, obs.h))
-        return pygame.transform.smoothscale(self.sprites.bird, (obs.w, obs.h))
+        if obs.sprite is not None:
+            return obs.sprite
+        base = self.sprites.cactus if obs.kind == ObsKind.GROUND else self.sprites.bird
+        obs.sprite = pygame.transform.scale(base, (obs.w, obs.h))
+        return obs.sprite
 
     def _obs_draw_rect(self, obs: Obstacle, lane_rect: pygame.Rect) -> pygame.Rect:
         gy = self._ground_y(lane_rect)

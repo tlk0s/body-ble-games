@@ -36,6 +36,9 @@ cd "$ROOT"
 export MOCK_BLE=0
 export BODY_FULLSCREEN=1
 export BODY_GAME="${BODY_GAME:-blob_jump}"
+# Pi Zero 2 W: 30 FPS + no procedural music keeps gameplay smooth
+export BODY_FPS="${BODY_FPS:-30}"
+export BODY_MUSIC="${BODY_MUSIC:-0}"
 # Uncomment if pygame fails to open display on your Pi OS image:
 # export SDL_VIDEODRIVER=wayland
 exec "$ROOT/.venv/bin/python" main.py
