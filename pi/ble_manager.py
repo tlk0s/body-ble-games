@@ -10,11 +10,13 @@ import time
 from dataclasses import dataclass
 from typing import Callable, Literal, Optional
 
-from ble_protocol import INPUT_CHAR_UUID, NAME_PREFIX, parse_input_packet
+from ble_protocol import INPUT_CHAR_UUID, NAME_PREFIX, SERVICE_UUID, parse_input_packet
 from players import PlayerManager
 
 STALE_NOTIFY_S = 2.5
 _P2_SCAN = os.environ.get("BODY_BLE_P2_SCAN", "0") not in ("0", "false", "False")
+_CONNECT_RETRIES = max(1, int(os.environ.get("BODY_BLE_CONNECT_RETRIES", "4")))
+_CONNECT_TIMEOUT = float(os.environ.get("BODY_BLE_CONNECT_TIMEOUT", "25"))
 
 
 @dataclass
@@ -122,18 +124,43 @@ class BleManager:
             address = device.address
             if address in clients:
                 return
-            self.status = f"connecting {device.name or address}…"
+            name = device.name or address
+            last_exc: Exception | None = None
 
-            client = BleakClient(
-                device,
-                timeout=20.0,
-                disconnected_callback=make_disconnect_cb(address),
-            )
-            await client.connect()
-            await client.start_notify(INPUT_CHAR_UUID, make_handler(address))
-            clients[address] = client
-            self.status = f"connected {len(clients)}/{self.MAX_DEVICES}"
-            self.last_error = ""
+            for attempt in range(1, _CONNECT_RETRIES + 1):
+                self.status = f"connecting {name}… ({attempt}/{_CONNECT_RETRIES})"
+                client = BleakClient(
+                    address,
+                    timeout=_CONNECT_TIMEOUT,
+                    disconnected_callback=make_disconnect_cb(address),
+                    services=[SERVICE_UUID],
+                )
+                try:
+                    # Pi BlueZ often drops ESP32 during the first GATT discovery burst.
+                    await asyncio.sleep(0.4 * attempt)
+                    await client.connect()
+                    if not client.is_connected:
+                        raise RuntimeError("connect() returned but link is down")
+                    await asyncio.sleep(0.6)
+                    await client.start_notify(INPUT_CHAR_UUID, make_handler(address))
+                    clients[address] = client
+                    self.status = f"connected {len(clients)}/{self.MAX_DEVICES}"
+                    self.last_error = ""
+                    return
+                except Exception as exc:  # noqa: BLE001
+                    last_exc = exc
+                    self.last_error = str(exc)
+                    self.status = "connect failed"
+                    clients.pop(address, None)
+                    try:
+                        if client.is_connected:
+                            await client.disconnect()
+                    except Exception:  # noqa: BLE001
+                        pass
+                    await asyncio.sleep(1.2)
+
+            if last_exc is not None:
+                raise last_exc
 
         while not self._stop.is_set():
             # Drop dead clients so scan can reconnect the same remote
