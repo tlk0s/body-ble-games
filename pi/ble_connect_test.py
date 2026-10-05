@@ -23,12 +23,14 @@ async def main() -> int:
 
     addr = device.address
     print(f"Found {device.name} @ {addr}")
+    # Let the adapter finish scanning before connect (avoids br-connection-canceled on Pi).
+    await asyncio.sleep(2.0)
 
     for attempt in range(1, 5):
         print(f"Connect attempt {attempt}/4 …")
-        client = BleakClient(addr, timeout=25.0, services=[SERVICE_UUID])
+        client = BleakClient(device, timeout=25.0, services=[SERVICE_UUID])
         try:
-            await asyncio.sleep(0.4 * attempt)
+            await asyncio.sleep(0.5 * attempt)
             await client.connect()
             await asyncio.sleep(0.6)
 

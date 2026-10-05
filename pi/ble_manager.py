@@ -126,18 +126,19 @@ class BleManager:
                 return
             name = device.name or address
             last_exc: Exception | None = None
+            await asyncio.sleep(1.5)
 
             for attempt in range(1, _CONNECT_RETRIES + 1):
                 self.status = f"connecting {name}… ({attempt}/{_CONNECT_RETRIES})"
                 client = BleakClient(
-                    address,
+                    device,
                     timeout=_CONNECT_TIMEOUT,
                     disconnected_callback=make_disconnect_cb(address),
                     services=[SERVICE_UUID],
                 )
                 try:
                     # Pi BlueZ often drops ESP32 during the first GATT discovery burst.
-                    await asyncio.sleep(0.4 * attempt)
+                    await asyncio.sleep(0.5 * attempt)
                     await client.connect()
                     if not client.is_connected:
                         raise RuntimeError("connect() returned but link is down")
