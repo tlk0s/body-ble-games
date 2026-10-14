@@ -6,3 +6,5 @@
 
 tolko ALL=(ALL) NOPASSWD: /usr/sbin/rfkill unblock bluetooth
 tolko ALL=(ALL) NOPASSWD: /usr/bin/bluetoothctl power on
+tolko ALL=(ALL) NOPASSWD: /usr/bin/btmgmt
+tolko ALL=(ALL) NOPASSWD: /usr/sbin/hciconfig

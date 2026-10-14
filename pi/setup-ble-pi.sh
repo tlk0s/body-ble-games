@@ -1,27 +1,13 @@
 #!/usr/bin/env bash
-# One-time / before-play: LE-only + unblock BT (helps br-connection-canceled on Pi Zero 2 W).
+# Manual BLE prep (same as boot ensure-bluetooth, but stops kiosk first).
 set -uo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-echo "Stopping kiosk if it holds the adapter (optional)…"
+echo "Stopping kiosk if it holds the adapter…"
 sudo systemctl stop body-ble-games-kiosk.service 2>/dev/null || true
+pkill -f 'python.*main.py' 2>/dev/null || true
 
-sudo rfkill unblock bluetooth 2>/dev/null || true
+"$ROOT/ensure-bluetooth.sh"
 
-if command -v btmgmt >/dev/null 2>&1; then
-  HCI="${BODY_BLE_HCI:-hci0}"
-  sudo btmgmt -i "$HCI" power off 2>/dev/null || true
-  sudo btmgmt -i "$HCI" le on 2>/dev/null || true
-  sudo btmgmt -i "$HCI" bredr off 2>/dev/null || true
-  sudo btmgmt -i "$HCI" power on 2>/dev/null || true
-fi
-
-if command -v bluetoothctl >/dev/null 2>&1; then
-  bluetoothctl power on 2>/dev/null || sudo bluetoothctl power on 2>/dev/null || true
-fi
-
-if command -v hciconfig >/dev/null 2>&1; then
-  sudo hciconfig hci0 reset 2>/dev/null || true
-fi
-
-echo "Done. Test: cd $(dirname "$0") && .venv/bin/python ble_connect_test.py"
-echo "Tip: if connect still fails, try: sudo rfkill block wlan  (Wi-Fi/BT interference test)"
+echo "Done. Test: cd $ROOT && .venv/bin/python ble_connect_test.py"
+echo "Tip: if connect fails with Wi-Fi on, try: sudo rfkill block wlan"

@@ -12,7 +12,7 @@
 [Unit]
 Description=Body BLE Games full-screen (no desktop)
 After=local-fs.target bluetooth.service network-online.target
-Wants=network-online.target
+Wants=bluetooth.service network-online.target
 Conflicts=getty@tty1.service
 Before=getty@tty1.service
 
@@ -24,7 +24,9 @@ SupplementaryGroups=video render input bluetooth tty
 WorkingDirectory=/home/tolko/body-ble-games/pi
 Environment=HOME=/home/tolko
 Environment=LANG=en_GB.UTF-8
-# Pre-start BT is optional (- = ignore failure); script also runs inside start-kiosk-headless.sh
+Environment=BODY_BLE_BOOT_DELAY=8
+Environment=BODY_BLE_P2_SCAN=1
+# Pre-start BT is optional (- = ignore failure); full prep also runs in start-kiosk-headless.sh
 ExecStartPre=-/home/tolko/body-ble-games/pi/ensure-bluetooth.sh
 ExecStart=/home/tolko/body-ble-games/pi/start-kiosk-headless.sh
 Restart=on-failure

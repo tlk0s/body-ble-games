@@ -25,6 +25,11 @@ fi
 
 chmod +x "$ROOT/ensure-bluetooth.sh" 2>/dev/null || true
 "$ROOT/ensure-bluetooth.sh" >>"$LOG" 2>&1 || true
+BLE_BOOT_DELAY="${BODY_BLE_BOOT_DELAY:-8}"
+if [[ "$BLE_BOOT_DELAY" != "0" ]]; then
+  log "Waiting ${BLE_BOOT_DELAY}s for Bluetooth after boot…"
+  sleep "$BLE_BOOT_DELAY"
+fi
 
 cd "$ROOT"
 export MOCK_BLE=0
@@ -33,7 +38,8 @@ export BODY_GAME="${BODY_GAME:-blob_jump}"
 export BODY_FPS="${BODY_FPS:-24}"
 export BODY_MUSIC="${BODY_MUSIC:-0}"
 export BODY_HDMI_720=0
-export BODY_BLE_P2_SCAN="${BODY_BLE_P2_SCAN:-0}"
+# Scan for 2nd belt after 1st connects (set 0 on weak Pi if you only ever play 1P).
+export BODY_BLE_P2_SCAN="${BODY_BLE_P2_SCAN:-1}"
 export BODY_DEBUG_HUD="${BODY_DEBUG_HUD:-0}"
 export SDL_VIDEO_VSYNC="${SDL_VIDEO_VSYNC:-0}"
 unset DISPLAY

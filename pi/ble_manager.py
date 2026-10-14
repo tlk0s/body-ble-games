@@ -14,7 +14,8 @@ from ble_protocol import INPUT_CHAR_UUID, NAME_PREFIX, SERVICE_UUID, parse_input
 from players import PlayerManager
 
 STALE_NOTIFY_S = 2.5
-_P2_SCAN = os.environ.get("BODY_BLE_P2_SCAN", "0") not in ("0", "false", "False")
+_P2_SCAN = os.environ.get("BODY_BLE_P2_SCAN", "1") not in ("0", "false", "False")
+_P2_SCAN_INTERVAL = float(os.environ.get("BODY_BLE_P2_SCAN_INTERVAL", "4"))
 _CONNECT_RETRIES = max(1, int(os.environ.get("BODY_BLE_CONNECT_RETRIES", "4")))
 _CONNECT_TIMEOUT = float(os.environ.get("BODY_BLE_CONNECT_TIMEOUT", "25"))
 
@@ -183,15 +184,22 @@ class BleManager:
 
             if len(clients) == 1:
                 self.status = f"connected {len(clients)}/{self.MAX_DEVICES} (P2 scan)"
-                await asyncio.sleep(15.0)
+                await asyncio.sleep(_P2_SCAN_INTERVAL)
                 scan_timeout = 1.5
             else:
                 self.status = "scanning…"
-                scan_timeout = 4.0
+                scan_timeout = float(os.environ.get("BODY_BLE_SCAN_TIMEOUT", "8"))
+
+            connected = set(clients.keys())
+
+            def _bodyctrl_not_connected(d, _ad) -> bool:
+                if not d.name or not d.name.startswith(NAME_PREFIX):
+                    return False
+                return d.address not in connected
 
             try:
                 device = await BleakScanner.find_device_by_filter(
-                    lambda d, _ad: bool(d.name and d.name.startswith(NAME_PREFIX)),
+                    _bodyctrl_not_connected,
                     timeout=scan_timeout,
                 )
             except Exception as exc:  # noqa: BLE001
